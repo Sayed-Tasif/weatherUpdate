@@ -40,7 +40,7 @@
 
     <script>
         const cityName = document.getElementById("place").innerText;
-        const apiLink = `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=188922390580868eee4346e8a7b0694d`;
+        const apiLink = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=188922390580868eee4346e8a7b0694d`;
         fetch(apiLink)
             .then(resp => resp.json())
             .then(data => {
