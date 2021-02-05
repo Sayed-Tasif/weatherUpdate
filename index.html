@@ -22,10 +22,10 @@
     <div class="container">
         <form class="col-md-6 m-auto py-5">
             <div class="input-group mb-3">
-                <input id="locationInput" type="text" value = "Dhaka" class="form-control"
+                <input id="locationInput" type="text" class="form-control"
                     placeholder="Enter a location for Weather ...">
                 <div class="input-group-append">
-                    <button id="searchBtn" type="button" class="btn btn-danger">Search</button>
+                    <button onclick="fetchUpdater(document.getElementById('locationInput').value)" type="button" class="btn btn-danger">Search</button>
                 </div>
             </div>
         </form>
@@ -39,64 +39,58 @@
 
 
     <script>
-        const cityName = document.getElementById("locationInput").value;
-        const apiLink = `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=188922390580868eee4346e8a7b0694d`;
-        fetch(apiLink)
-            .then(resp => resp.json())
-            .then(data => {
-                const inputField = document.getElementById("locationInput");
-                const srcBtn = document.getElementById("searchBtn");
-                srcBtn.addEventListener("click", function(){
-                    searchedPlace = document.getElementById("place");
-                    searchedPlace.innerText = inputField.value;
-                    
+        let inputAreaValue = document.getElementById("locationInput").value;
+
+        function fetchUpdater(valueText) {
+            const apiLink = `https://api.openweathermap.org/data/2.5/weather?q=${valueText}&units=metric&appid=188922390580868eee4346e8a7b0694d`;
+            fetch(apiLink)
+                .then(resp => resp.json())
+                .then(data =>{
+                    console.log(data);
+                    infoUpdater(data.name, data.main.temp,data.weather[0].id,data.weather[0].main)
                 })
+        }
+        fetchUpdater(inputAreaValue);
 
+        function infoUpdater(cityName, temperature, id, condition){
+            let placeName = document.getElementById("place");
+            let tempValue = document.getElementById("temp");
+            let weatherCondition = document.getElementById("weatherCondition");
+            const wcDataPath = id;
 
-                const cityNam = data.name;
-                const tempDataPath = data.main.temp;
-                const temper = tempDataPath - 273.15;
-                const weatherConditionDataPath = data.weather[0].main;
-                const wcDataPath = data.weather[0].id;
-                
+            placeName.innerText = cityName;
+            tempValue.innerText = temperature;
+            weatherCondition.innerText = condition;
+            // Thunderstorm
+            if (wcDataPath >= 200 && wcDataPath < 232) {
+                document.getElementById("image").src = "https://openweathermap.org/img/wn/11d@2x.png";
+            }
+            // Drizzle
+            else if (wcDataPath >= 300 && wcDataPath <= 321) {
+                document.getElementById("image").src = "https://openweathermap.org/img/wn/09d@2x.png";
+            }
+            // Rain
+            else if (wcDataPath >= 500 && wcDataPath <= 531) {
+                document.getElementById("image").src = "https://openweathermap.org/img/wn/10d@2x.png";
+            }
+            // Snow
+            else if (wcDataPath >= 600 && wcDataPath <= 622) {
+                document.getElementById("image").src = "https://openweathermap.org/img/wn/13d@2x.png";
+            }
+            // Atmosphere
+            else if (wcDataPath >= 700 && wcDataPath <= 781) {
+                document.getElementById("image").src = "https://openweathermap.org/img/wn/50d@2x.png";
+            }
+            // Clear
+            else if (wcDataPath == 800) {
+                document.getElementById("image").src = "https://openweathermap.org/img/wn/01d@2x.png";
+            }
+            // Clouds
+            else if (wcDataPath >= 801 && wcDataPath <= 804) {
+                document.getElementById("image").src = "https://openweathermap.org/img/wn/02d@2x.png";
+            }
 
-                let temperatureHeader = document.getElementById("temp");
-                let weatherConditionHeader = document.getElementById("weatherCondition");
-                weatherConditionHeader.innerText = weatherConditionDataPath;
-                temperatureHeader.innerText = parseInt(temper);
-
-
-
-                // Thunderstorm
-                if (wcDataPath >= 200 && wcDataPath < 232) {
-                    document.getElementById("image").src = "https://openweathermap.org/img/wn/11d@2x.png";
-                }
-                // Drizzle
-                else if (wcDataPath >= 300 && wcDataPath <= 321) {
-                    document.getElementById("image").src = "https://openweathermap.org/img/wn/09d@2x.png";
-                }
-                // Rain
-                else if (wcDataPath >= 500 && wcDataPath <= 531) {
-                    document.getElementById("image").src = "https://openweathermap.org/img/wn/10d@2x.png";
-                }
-                // Snow
-                else if (wcDataPath >= 600 && wcDataPath <= 622) {
-                    document.getElementById("image").src = "https://openweathermap.org/img/wn/13d@2x.png";
-                }
-                // Atmosphere
-                else if (wcDataPath >= 700 && wcDataPath <= 781) {
-                    document.getElementById("image").src = "https://openweathermap.org/img/wn/50d@2x.png";
-                }
-                // Clear
-                else if (wcDataPath == 800) {
-                    document.getElementById("image").src = "https://openweathermap.org/img/wn/01d@2x.png";
-                }
-                // Clouds
-                else if (wcDataPath >= 801 && wcDataPath <= 804) {
-                    document.getElementById("image").src = "https://openweathermap.org/img/wn/02d@2x.png";
-                }
-
-            })
+        }
     </script>
 
 </body>

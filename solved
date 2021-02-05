@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+ 
+<head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ 
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url(images/bg-image.jpg) no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div class="container">
+        <form class="col-md-6 m-auto py-5">
+            <div class="input-group mb-3">
+                <input id="locationInput" type="text" class="form-control"
+                    placeholder="Enter a location for Weather ...">
+                <div class="input-group-append">
+                    <button onclick="doFetchRequest(document.getElementById('locationInput').value)" id="searchBtn" type="button" class="btn btn-danger">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="weather-status text-white text-center">
+            <img id="image" src="" alt="">
+            <h1 id="place">Dhaka</h1>
+            <h3><span id="temp">38.06</span>&deg;C</h3>
+            <h1 id="weatherCondition" class="lead">Clouds</h1>
+        </div>
+    </div>
+ 
+ 
+    <script>
+ 
+        const searchButton = document.getElementById('searchBtn');
+    
+        function doFetchRequest(city){
+            console.log(city);
+            const apiLink = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=188922390580868eee4346e8a7b0694d`;
+            fetch(apiLink)
+            .then(resp => resp.json())
+            .then(data => {
+            console.log(data);
+               updateUI(data.name, data.main.temp,data.weather[0].main, data.weather[0].id); 
+            })
+        }
+ 
+ 
+        function updateUI(city, temp, condition, id){
+            
+                let temperatureHeader = document.getElementById("temp");
+                let weatherConditionHeader = document.getElementById("weatherCondition");
+                let cityName = document.getElementById("place");
+ 
+                const wcDataPath = id;
+                temperatureHeader.innerText = temp;
+                cityName.innerText = city;
+                weatherConditionHeader.innerText = condition;
+ 
+                if (wcDataPath >= 200 && wcDataPath < 232) {
+                    document.getElementById("image").src = "https://openweathermap.org/img/wn/11d@2x.png";
+                }
+                // Drizzle
+                else if (wcDataPath >= 300 && wcDataPath <= 321) {
+                    document.getElementById("image").src = "https://openweathermap.org/img/wn/09d@2x.png";
+                }
+                // Rain
+                else if (wcDataPath >= 500 && wcDataPath <= 531) {
+                    document.getElementById("image").src = "https://openweathermap.org/img/wn/10d@2x.png";
+                }
+                // Snow
+                else if (wcDataPath >= 600 && wcDataPath <= 622) {
+                    document.getElementById("image").src = "https://openweathermap.org/img/wn/13d@2x.png";
+                }
+                // Atmosphere
+                else if (wcDataPath >= 700 && wcDataPath <= 781) {
+                    document.getElementById("image").src = "https://openweathermap.org/img/wn/50d@2x.png";
+                }
+                // Clear
+                else if (wcDataPath == 800) {
+                    document.getElementById("image").src = "https://openweathermap.org/img/wn/01d@2x.png";
+                }
+                // Clouds
+                else if (wcDataPath >= 801 && wcDataPath <= 804) {
+                    document.getElementById("image").src = "https://openweathermap.org/img/wn/02d@2x.png";
+                }
+        }
+ 
+       
+    </script>
+ 
+</body>
+ 
+</html>
